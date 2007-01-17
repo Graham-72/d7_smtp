@@ -133,6 +133,7 @@ function user_mail_wrapper($to, $subject, $message, $header) {
 	$mail = new phpmailer(); //Create a new phpmailer object.
 	$username = variable_get('smtp_username', '');
 	$password = variable_get('smtp_password', '');
+	$from = ''; //email address that the email should be from.
 	
 	//Set the default name emails should be from. If value is not defined in settings use site_name.
 	if (variable_get('smtp_fromname', '') != ''){
@@ -170,6 +171,10 @@ function user_mail_wrapper($to, $subject, $message, $header) {
 	  else { //If header_line doesn't match anything then just add it the way it is.
 	    $mail->AddCustomHeader($header_line);
 	  }
+	}
+	
+	if ($from == ''){ //Make sure $from gets a value if one wasn't in the headers.
+	  $from = variable_get('site_mail', 'test@example.com');
 	}
 	
 	$mail->Host = variable_get('smtp_host', '') . ';' . variable_get('smtp_hostbackup', '');
