@@ -179,7 +179,7 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
         $from = $value; //If a from value was already given then set based on header.
       }
     }
-    else if (strtolower($key) == 'content-type' and strtolower($value) == 'text/html') {
+    else if (strtolower($key) == 'content-type' and strpos(strtolower($value),'text/html') !== FALSE) {
       $mail->IsHTML(TRUE);
     }
     else { //Else the header key is not special, just add it.
