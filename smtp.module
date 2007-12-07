@@ -914,8 +914,19 @@ class PHPMailer
             $formatted = $addr[0];
         else
         {
-            $formatted = $this->EncodeHeader($addr[1], 'phrase') . " <" . 
-                         $addr[0] . ">";
+            // If the from address already contains a name and address, as indicated
+            // by the angle brackets, then ignore the FromName and simply use
+            // the From field as it was provided.  This allows per-call override
+            // of the From field when using the smtp module, important to modules
+            // such as OG
+            if(strpos($addr[0], "<") !== false && strpos($addr[0], ">") !== false)
+            {
+                $formatted = $addr[0];
+            }
+            else
+            {
+                $formatted = $this->EncodeHeader($addr[1], 'phrase') . " <" . $addr[0] . ">";
+            }
         }
 
         return $formatted;
