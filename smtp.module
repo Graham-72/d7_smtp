@@ -214,7 +214,21 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
 	
 	$mail->From = $from;
 	$mail->FromName = $from_name;
-	$mail->AddAddress($to);
+
+  $torecipients = split(",", $to);
+  foreach ($torecipients as $torecipient) {
+    if (strpos($torecipient, '<') !== false) {
+      $toparts = explode(" <", $torecipient);
+      $toname = $toparts[0];
+      $toaddr = rtrim($toparts[1], ">");
+    }
+    else {
+      $toname = "";
+      $toaddr = $torecipient;
+    }
+    $mail->AddAddress($toaddr, $toname);
+  }
+
 	$mail->Subject = $subject;
 	$mail->Body = $body;
 	
