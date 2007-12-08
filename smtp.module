@@ -182,6 +182,21 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
     else if (strtolower($key) == 'content-type' and strpos(strtolower($value),'text/html') !== FALSE) {
       $mail->IsHTML(TRUE);
     }
+    else if (strtolower($key) == 'bcc') {
+      $bccrecipients = split(",", $value);
+      foreach ($bccrecipients as $bccrecipient) {
+        if ( strpos($bccrecipient, '<') !== false ) {
+          $bccparts = explode(" <", $bccrecipient);
+          $bccname = $bccparts[0];
+          $bccaddr = rtrim($bccparts[1], ">");
+        }
+        else {
+          $bccname = "";
+          $bccaddr = $bccrecipient;
+        }
+        $mail->AddBCC($bccaddr, $bccname);
+      }
+    }
     else { //Else the header key is not special, just add it.
       $mail->AddCustomHeader($key . ": " . $value); //Add header line.
     }
