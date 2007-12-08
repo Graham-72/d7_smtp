@@ -192,6 +192,20 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
     else if (strtolower($key) == 'content-type' and strpos(strtolower($value),'text/html') !== FALSE) {
       $mail->IsHTML(TRUE);
     }
+    else if (strtolower($key) == 'reply-to') {
+      $mail->AddReplyTo = $value;
+    }
+    else if (strtolower($key) == 'return-path') {
+      if (trim($value) !=  '') {
+        $mail->Sender = $value;
+      }
+    }
+    else if (strtolower($key) == 'content-transfer-encoding') {
+      $mail->Encoding = $value;
+    }
+    else if (strtolower($key) == 'mime-version') {
+      // just ommit MIME-Version it since it will be set by PHP-Mailer
+    }
     else if (strtolower($key) == 'bcc') {
       $bccrecipients = split(",", $value);
       foreach ($bccrecipients as $bccrecipient) {
