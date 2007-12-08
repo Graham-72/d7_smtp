@@ -218,11 +218,11 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
 	$mail->Subject = $subject;
 	$mail->Body = $body;
 	
-	watchdog("error", "About to send email to: " . $to);
+  watchdog('smtp', "Sending mail to: $to");
 
 	//Try to send email, if it fails set watchdog entry.
 	if(!$mail->Send()) {
-		watchdog("error", "Error sending email: \"" . $mail->ErrorInfo . "\" From: \"$from\" To: \"$to\"");
+    watchdog("smtp", "Error sending email: '". $mail->ErrorInfo ."' From: '$from' To: '$to'", WATCHDOG_ERROR);
 		return false;
 	}
 	
