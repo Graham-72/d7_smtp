@@ -279,11 +279,11 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
 	$mail->Subject = $subject;
 	$mail->Body = $body;
 	
-  watchdog('smtp', "Sending mail to: $to");
+  watchdog('smtp', t('Sending mail to: !to', array('!to' => $to)));
 
 	//Try to send email, if it fails set watchdog entry.
 	if(!$mail->Send()) {
-    watchdog("smtp", "Error sending email: '". $mail->ErrorInfo ."' From: '$from' To: '$to'", WATCHDOG_ERROR);
+    watchdog("smtp", t('Error sending e-mail from !from to !to: ', array('!from' => $from, '!to' => $to)) . $mail->ErrorInfo, WATCHDOG_ERROR);
 		return false;
 	}
 	
@@ -527,6 +527,10 @@ class PHPMailer
 
     /**
      *  Sets SMTP class debugging on or off.
+     *
+     *  Set this to 'true' to get additional information for debugging
+     *  problems.
+     *
      *  @var bool
      */
     var $SMTPDebug    = false;
