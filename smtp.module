@@ -201,7 +201,10 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
       $mail->message_type = "pre";
     }
     else if (strtolower($key) == 'reply-to') {
-      $mail->AddReplyTo = $value;
+      // Only add a "reply-to" if it's not the same as "return-path".
+      if ($value != $header['Return-Path']) {
+        $mail->AddReplyTo($value);
+      }
     }
     else if (strtolower($key) == 'return-path') {
       if (trim($value) !=  '') {
