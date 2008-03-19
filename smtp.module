@@ -88,19 +88,21 @@ function smtp_admin_settings() {
     '#default_value' => variable_get('smtp_port', '25'),
     '#description' => t('The default SMTP port is 25, if that is being blocked try 80. Gmail uses 465. See !url for more information on configuring for use with Gmail.', array('!url' => l(t('this page'), 'http://gmail.google.com/support/bin/answer.py?answer=13287'))));
   if (function_exists('openssl_open')){ //Only display the option if openssl is installed.
-    $form['server']['smtp_protocol'] = array(
-      '#type' => 'select',
-      '#title' => t('Use encrypted protocol'),
-      '#default_value' => variable_get('smtp_protocol', 'standard'),
-      '#options' => array('standard' => t('No'), 'ssl' => t('Use SSL'), 'tls' => t('Use TLS')),
-      '#description' => t('This allows connection to an SMTP server that requires SSL encryption such as gmail.'));
+    $encryption_options = array('standard' => t('No'), 'ssl' => t('Use SSL'), 'tls' => t('Use TLS'));
+    $encryption_description = t('This allows connection to an SMTP server that requires SSL encryption such as Gmail.');
   }
   else{ //If openssl is not installed use normal protocol.
     variable_set('smtp_protocol', 'standard');
-    $form['server']['smtp_protocol'] = array(
-      '#value' => t('Your PHP installation does not have SSL enabled. See the !url page on php.net for more information.', array('' => l(t('OpenSSL Functions'), 'http://php.net/openssl'))),
-    );
+    $encryption_options = array('standard' => t('No'));
+    $encryption_description = t('Your PHP installation does not have SSL enabled. See the !url page on php.net for more information. Gmail requires SSL.', array('!url' => l(t('OpenSSL Functions'), 'http://php.net/openssl')));
   }
+  $form['server']['smtp_protocol'] = array(
+    '#type' => 'select',
+    '#title' => t('Use encrypted protocol'),
+    '#default_value' => variable_get('smtp_protocol', 'standard'),
+    '#options' => $encryption_options,
+    '#description' => $encryption_description,
+    );
   
   $form['auth'] = array('#type' => 'fieldset', '#title' => t('SMTP Authentication'), '#description' => t('Leave blank if your SMTP server does not require authentication.'));
   $form['auth']['smtp_username'] = array(
