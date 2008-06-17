@@ -1,5 +1,9 @@
 // $Id$
 
+2008-06-17 Jason Flatt drupal@oadaeh.net
+  * smtp.module: Changed how SMTP checks for Mime Mail being installed and
+    enabled (http://drupal.org/node/271626).
+
 2008-06-16 Jason Flatt drupal@oadaeh.net
   * smtp.module: Added support for integration with the Mime Mail module
     (http://drupal.org/project/mimemail) integration. Code submitted by Jason
