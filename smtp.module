@@ -48,8 +48,11 @@ function smtp_admin_settings() {
   //Override the smtp_library variable.
   if (variable_get('smtp_on', 0)) {
     $smtp_path = drupal_get_filename('module', 'smtp');
-    if ($smtp_path){
-      variable_set('smtp_library', $smtp_path);
+    if ($smtp_path) {
+      if (!module_exists('mimemail') || variable_get('mimemail_alter', 0) == 0) {
+        variable_set('smtp_library', $smtp_path);
+      }
+
       drupal_set_message(t('SMTP.module is active.'));
     }
     else { //If drupal can't find the path to the module.
@@ -157,10 +160,10 @@ function smtp_admin_settings() {
  *   string subject of email.
  * @param $body
  *   string body of message.
- * @param $header
- *   string of header lines seperated by "\n".
+ * @param $headers
+ *   array of headers.
  */
-function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
+function _drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers) {
 	$mail = new phpmailer(); //Create a new phpmailer object.
 	$username = variable_get('smtp_username', '');
 	$password = variable_get('smtp_password', '');
@@ -185,6 +188,9 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
     }
   }
 
+  $from_name = preg_replace("/\"(.*)\"(.*)/i", "$1", $from); // It gives: Name
+  $from      = preg_replace("/(.*)\<(.*)\>/i", "$2", $from); // It gives: name@domain.tld
+
   // Defines the From value to what we expect
   $mail->From     = "\"".$from_name ."\" <".$from .">" ;
   $mail->FromName = $from_name;
@@ -199,69 +205,69 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
 	
 	
 	//Take care of the email headers.
-  foreach ($header as $key => $value) {
-    //watchdog('error', 'Key: ' . $key . ' Value: ' . $value);
-    if (strtolower($key) == 'from') {
-      if ($from == NULL or $from == '') {
-        // If a from value was already given then set based on header.
-        // Should be the most common situation since drupal_mail moves the from to headers
-        $from           = $value;
-        $mail->From     = $value;
-        $mail->FromName = ''; // then from can be out of sync with from_name !
-        $mail->Sender   = $value;
+  foreach ($headers as $key => $value) {
+      $lkey = strtolower($key);
+      $lvalue = strtolower($value);
+
+      switch( $lkey ) {
+         case 'from':
+            if ($from == NULL or $from == '') {
+               // If a from value was already given then set based on header.
+               // Should be the most common situation since drupal_mail moves the from to headers
+               $from           = $value;
+               $mail->From     = $value;
+               $mail->FromName = ''; // then from can be out of sync with from_name !
+               $mail->Sender   = $value;
+            }
+            break;
+   
+         case 'content-type':
+            if (strpos($lvalue, 'text/html') !== FALSE) {
+               $mail->IsHTML(TRUE);
+            }
+            else if ((strpos($lvalue, 'multipart/mixed') !== FALSE) || (strpos($lvalue, 'multipart/alternative') !== FALSE)) {
+               //$body passed to smtp should already be formatted. add multipart header and tell phpmailer to leave it alone
+               $mail->AddCustomHeader($key . ": " . $value);
+               $mail->message_type = "pre";
+            }
+            break;
+    
+         case 'reply-to':
+            // Only add a "reply-to" if it's not the same as "return-path".
+            if ($value != $header['Return-Path']) {
+               $mail->AddReplyTo($value);
+            }
+            break;
+ 
+         case 'return-path':
+            if (trim($value) !=  '') {
+               // This is be set by SmtpSend()
+               // $mail->Sender = $value;
+            }
+            break;
+       
+         case 'content-transfer-encoding':
+            $mail->Encoding = $value;
+            break;
+  
+         case 'mime-version':
+         case 'x-mailer':
+         case 'errors-to': 
+            // ommit since it will be set by PHP-Mailer
+            break;
+   
+         case 'bcc':
+            $bcc_addresses = _smtp_recipients_to_address_list($value);
+
+            foreach ($bcc_addresses as $bcc_address) {
+               $mail->AddBCC($bcc_address['addr'], $bcc_address['name']);
+            }
+            break;
+
+         default:
+            $mail->AddCustomHeader($key . ": " . $value); 
       }
-    }
-    else if (strtolower($key) == 'content-type' && strpos(strtolower($value),'text/html') !== FALSE) {
-      $mail->IsHTML(TRUE);
-    }
-    else if (strtolower($key) == 'content-type' && strpos(strtolower($value), 'multipart/mixed') !== FALSE) {
-      //$body passed to smtp should already be formatted. add multipart header and tell phpmailer to leave it alone
-      $mail->AddCustomHeader($key . ": " . $value);
-      $mail->message_type = "pre";
-    }
-    else if (strtolower($key) == 'reply-to') {
-      // Only add a "reply-to" if it's not the same as "return-path".
-      if ($value != $header['Return-Path']) {
-        $mail->AddReplyTo($value);
-      }
-    }
-    else if (strtolower($key) == 'return-path') {
-      if (trim($value) !=  '') {
-// This is be set by SmtpSend()
-//        $mail->Sender = $value;
-      }
-    }
-    else if (strtolower($key) == 'content-transfer-encoding') {
-      $mail->Encoding = $value;
-    }
-    else if (strtolower($key) == 'mime-version') {
-      // just ommit MIME-Version it since it will be set by PHP-Mailer
-    }
-    else if (strtolower($key) == 'x-mailer') {
-      // just ommit X-Mailer it since it will be set by PHP-Mailer
-    }
-    else if (strtolower($key) == 'errors-to') {
-      // just prefer to keep control on this one, it will be set by PHP-Mailer
-    }
-    else if (strtolower($key) == 'bcc') {
-      $bccrecipients = split(",", $value);
-      foreach ($bccrecipients as $bccrecipient) {
-        if ( strpos($bccrecipient, '<') !== false ) {
-          $bccparts = explode(" <", $bccrecipient);
-          $bccname = $bccparts[0];
-          $bccaddr = rtrim($bccparts[1], ">");
-        }
-        else {
-          $bccname = "";
-          $bccaddr = $bccrecipient;
-        }
-        $mail->AddBCC($bccaddr, $bccname);
-      }
-    }
-    else { //Else the header key is not special, just add it.
-      $mail->AddCustomHeader($key . ": " . $value); //Add header line.
-    }
-  }
+   }
 
 //  TODO: Delete the following commented 4 lines, as this is now done at the beginning of the function.
 	//If no from address has been set than use a default.
@@ -294,22 +300,14 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
 //	$mail->From = $from;
 //	$mail->FromName = $from_name;
 
-  $torecipients = split(",", $to);
-  foreach ($torecipients as $torecipient) {
-    if (strpos($torecipient, '<') !== false) {
-      $toparts = explode(" <", $torecipient);
-      $toname = $toparts[0];
-      $toaddr = rtrim($toparts[1], ">");
-    }
-    else {
-      $toname = "";
-      $toaddr = $torecipient;
-    }
-    $mail->AddAddress($toaddr, $toname);
-  }
+   $to_addresses = _smtp_recipients_to_address_list($to);
 
-	$mail->Subject = $subject;
-	$mail->Body = $body;
+   foreach ($to_addresses as $to_address) {
+      $mail->AddAddress($to_address['addr'], $to_address['name']);
+   }
+
+   $mail->Subject = $subject;
+   $mail->Body = $body;
 	
   watchdog('smtp', t('Sending mail to: !to', array('!to' => $to)));
 
@@ -319,10 +317,81 @@ function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $header) {
 		return false;
 	}
 	
-	$mail->SmtpClose();
-	return true;
+   $mail->SmtpClose();
+   return true;
 }
 
+if (!module_exists('mimemail')) {
+   function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers) {
+      return _drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers);
+   }
+}
+
+if (module_exists('mimemail')) {
+   function smtp_mailengine($op, $message = array()) {
+      //default values
+      $message = array_merge( array(
+          'address' => '', 
+          'subject' => '', 
+          'body' => '', 
+          'sender' => '', 
+          'headers' => '', 
+          ), $message);
+      
+      switch ($op) {
+        case 'name':
+          return t('SMTP');
+          
+        case 'description':
+          return t("SMTP mailing engine using SMTP module.");
+          
+        case 'settings': //not implemented
+          return false;
+          
+        case 'multiple':
+        case 'single':
+        case 'send':
+          if (!is_array($message['address'])) {
+            $message['address'] = array($message['address']);
+          }
+          $status = true;
+          foreach ($message['address'] as $to) {
+             $status = _drupal_mail_wrapper(
+               '',
+               $to,
+               $message['subject'],
+               $message['body'],
+               $message['headers']['From'],
+               $message['headers']) && $status; 
+          }
+          return $status;
+      }
+
+      return false;
+   }
+}
+
+function _smtp_recipients_to_address_list($recipients) {
+   $address_list = array();
+ 
+   $addresses = split(",", $recipients);
+
+   foreach ($addresses as $address) {
+      if (strpos($address, '<') !== false) {
+         $parts = explode(" <", $address);
+         $name = $parts[0];
+         $addr = rtrim($parts[1], ">");
+      }
+      else {
+         $name = "";
+         $addr = $address;
+      }
+     
+      $address_list[] = array('addr'=>$addr, 'name'=>$name);
+   }
+
+   return $address_list;
+}
 
 /**
  * PHPMailer language settings.  

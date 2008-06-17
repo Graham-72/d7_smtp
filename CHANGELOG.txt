@@ -1,0 +1,7 @@
+// $Id$
+
+2008-06-16 Jason Flatt drupal@oadaeh.net
+  * smtp.module: Added support for integration with the Mime Mail module
+    (http://drupal.org/project/mimemail) integration. Code submitted by Jason
+    Millard (http://drupal.org/user/104416) with modifications from Attila
+    Beregszászi (http://drupal.org/user/32875) and myself.
