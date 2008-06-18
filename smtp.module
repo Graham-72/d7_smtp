@@ -68,7 +68,7 @@ function smtp_admin_settings() {
   $form['onoff']['smtp_on'] = array(
     '#type' => 'radios',
     '#title' => t('Turn this module On or Off'),
-    '#default_value' => variable_get('smtp_on', 1),
+    '#default_value' => variable_get('smtp_on', 0),
     '#options' => array(1 => 'On', 0 => 'Off'),
     '#description' => t('To uninstall this module you must turn it off here first.'));
   
@@ -322,9 +322,11 @@ function _drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers) {
 }
 
 if (!module_exists('mimemail') || (module_exists('mimemail') && variable_get('mimemail_alter', 0) == 0)) {
-   function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers) {
+  if (!function_exists('drupal_mail_wrapper')) {
+    function drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers) {
       return _drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers);
-   }
+    }
+  }
 }
 
 if (module_exists('mimemail')) {

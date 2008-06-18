@@ -1,5 +1,9 @@
 // $Id$
 
+2008-06-18 Jason Flatt drupal@oadaeh.net
+  * smtp.module: Added another check for an edge case of enabling Mime Mail.
+    Changed the default (un-enabled) on/off value to be off rather than on.
+
 2008-06-17 Jason Flatt drupal@oadaeh.net
   * smtp.module: Changed how SMTP checks for Mime Mail being installed and
     enabled (http://drupal.org/node/271626).
