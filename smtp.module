@@ -145,6 +145,13 @@ function smtp_admin_settings() {
     '#title' => t('E-mail address to send test email too'),
     '#default_value' => '',
     '#description' => t('Type in an address to have a test email sent there.'));
+
+  $form['smtp_debugging'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Enable debugging'),
+    '#default_value' => variable_get('smtp_debugging', 0),
+    '#description'   => t('Checking this box will print SMTP messages from the server for every e-mail that is sent.'),
+  );
     
   return system_settings_form($form);
 }
@@ -165,6 +172,9 @@ function smtp_admin_settings() {
  */
 function _drupal_mail_wrapper($mailkey, $to, $subject, $body, $from, $headers) {
 	$mail = new phpmailer(); //Create a new phpmailer object.
+  if (variable_get('smtp_debugging', 0) == 1) {
+    $mail->SMTPDebug = TRUE;
+  }
 	$username = variable_get('smtp_username', '');
 	$password = variable_get('smtp_password', '');
 	

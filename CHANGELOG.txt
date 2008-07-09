@@ -1,5 +1,8 @@
 // $Id$
 
+2008-07-09 Jason Flatt drupal@oadaeh.net
+  * smtp.module: Added an administrative option for enabling debugging.
+
 2008-06-18 Jason Flatt drupal@oadaeh.net
   * smtp.module: Added another check for an edge case of enabling Mime Mail.
     Changed the default (un-enabled) on/off value to be off rather than on.
