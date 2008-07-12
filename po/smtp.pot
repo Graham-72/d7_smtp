@@ -1,0 +1,277 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  smtp.module,v 1.15.2.21 2008/07/09 23:23:59 oadaeh
+#  smtp.info,v 1.2.2.2 2007/12/03 16:39:03 oadaeh
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-07-12 08:45-0700\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: smtp.module:26
+msgid "SMTP support"
+msgstr ""
+
+#: smtp.module:27
+msgid "Allows the sending of site email to an SMTP server of your choice."
+msgstr ""
+
+#: smtp.module:56
+msgid "SMTP.module is active."
+msgstr ""
+
+#: smtp.module:59
+msgid "SMTP.module error: Can't find file."
+msgstr ""
+
+#: smtp.module:64
+msgid "SMTP.module is INACTIVE."
+msgstr ""
+
+#: smtp.module:67
+msgid "Install options"
+msgstr ""
+
+#: smtp.module:70
+msgid "Turn this module On or Off"
+msgstr ""
+
+#: smtp.module:72
+msgid "On"
+msgstr ""
+
+#: smtp.module:72
+msgid "Off"
+msgstr ""
+
+#: smtp.module:73
+msgid "To uninstall this module you must turn it off here first."
+msgstr ""
+
+#: smtp.module:75
+msgid "SMTP server settings"
+msgstr ""
+
+#: smtp.module:78
+msgid "SMTP Server"
+msgstr ""
+
+#: smtp.module:80
+msgid "The address of your outgoing SMTP server."
+msgstr ""
+
+#: smtp.module:83
+msgid "SMTP Backup Server"
+msgstr ""
+
+#: smtp.module:85
+msgid "The address of your outgoing SMTP backup server. If the primary server can't be found this one will be tried. This is optional."
+msgstr ""
+
+#: smtp.module:88
+msgid "SMTP port"
+msgstr ""
+
+#: smtp.module:92
+msgid "The default SMTP port is 25, if that is being blocked try 80. Gmail uses 465. See !url for more information on configuring for use with Gmail."
+msgstr ""
+
+#: smtp.module:92
+msgid "this page"
+msgstr ""
+
+#: smtp.module:94;99
+msgid "No"
+msgstr ""
+
+#: smtp.module:94
+msgid "Use SSL"
+msgstr ""
+
+#: smtp.module:94
+msgid "Use TLS"
+msgstr ""
+
+#: smtp.module:95
+msgid "This allows connection to an SMTP server that requires SSL encryption such as Gmail."
+msgstr ""
+
+#: smtp.module:100
+msgid "Your PHP installation does not have SSL enabled. See the !url page on php.net for more information. Gmail requires SSL."
+msgstr ""
+
+#: smtp.module:100
+msgid "OpenSSL Functions"
+msgstr ""
+
+#: smtp.module:104
+msgid "Use encrypted protocol"
+msgstr ""
+
+#: smtp.module:110
+msgid "SMTP Authentication"
+msgstr ""
+
+#: smtp.module:110
+msgid "Leave blank if your SMTP server does not require authentication."
+msgstr ""
+
+#: smtp.module:113
+msgid "Username"
+msgstr ""
+
+#: smtp.module:115
+msgid "SMTP Username."
+msgstr ""
+
+#: smtp.module:118
+msgid "Password"
+msgstr ""
+
+#: smtp.module:120
+msgid "SMTP password."
+msgstr ""
+
+#: smtp.module:122
+msgid "E-mail options"
+msgstr ""
+
+#: smtp.module:125
+msgid "E-mail from"
+msgstr ""
+
+#: smtp.module:127
+msgid "The E-mail-address that all emails will be from."
+msgstr ""
+
+#: smtp.module:130
+msgid "E-mail from Name"
+msgstr ""
+
+#: smtp.module:132
+msgid "The name that all emails will be from. If left blank will use the site name of: "
+msgstr ""
+
+#: smtp.module:138
+msgid "Drupal test email"
+msgstr ""
+
+#: smtp.module:138
+msgid "If you receive this message it means your site is capable of sending email."
+msgstr ""
+
+#: smtp.module:139
+msgid "A test E-mail has been sent to @email. You may want to !check for any error messages."
+msgstr ""
+
+#: smtp.module:139
+msgid "check the logs"
+msgstr ""
+
+#: smtp.module:142
+msgid "Send test E-mail"
+msgstr ""
+
+#: smtp.module:145
+msgid "E-mail address to send test email too"
+msgstr ""
+
+#: smtp.module:147
+msgid "Type in an address to have a test email sent there."
+msgstr ""
+
+#: smtp.module:151
+msgid "Enable debugging"
+msgstr ""
+
+#: smtp.module:153
+msgid "Checking this box will print SMTP messages from the server for every e-mail that is sent."
+msgstr ""
+
+#: smtp.module:322
+msgid "Sending mail to: !to"
+msgstr ""
+
+#: smtp.module:326
+msgid "Error sending e-mail from !from to !to: "
+msgstr ""
+
+#: smtp.module:355 smtp.info:0
+msgid "SMTP"
+msgstr ""
+
+#: smtp.module:358
+msgid "SMTP mailing engine using SMTP module."
+msgstr ""
+
+#: smtp.module:416
+msgid "You must provide at least one recipient email address."
+msgstr ""
+
+#: smtp.module:417
+msgid "mailer is not supported."
+msgstr ""
+
+#: smtp.module:418
+msgid "Could not execute:"
+msgstr ""
+
+#: smtp.module:419
+msgid "Could not instantiate mail function."
+msgstr ""
+
+#: smtp.module:420
+msgid "SMTP Error: Could not authenticate."
+msgstr ""
+
+#: smtp.module:421
+msgid "The following From address failed:"
+msgstr ""
+
+#: smtp.module:422
+msgid "SMTP Error: The following recipients failed:"
+msgstr ""
+
+#: smtp.module:423
+msgid "SMTP Error: Data not accepted."
+msgstr ""
+
+#: smtp.module:424
+msgid "SMTP Error: Could not connect to SMTP host."
+msgstr ""
+
+#: smtp.module:425
+msgid "Could not access file:"
+msgstr ""
+
+#: smtp.module:426
+msgid "File Error: Could not open file:"
+msgstr ""
+
+#: smtp.module:427
+msgid "Unknown encoding:"
+msgstr ""
+
+#: smtp.module:322;326;0
+msgid "smtp"
+msgstr ""
+
+#: smtp.info:0
+msgid "Allows the sending of site email to an SMTP server."
+msgstr ""
+
+#: smtp.info:0
+msgid "Mail"
+msgstr ""
+
