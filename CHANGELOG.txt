@@ -1,4 +1,3 @@
-// $Id$
 
 2008-07-12 Jason Flatt drupal@oadaeh.net
   * smtp.module: Made the "On" and "Off" radio options translatable, per
