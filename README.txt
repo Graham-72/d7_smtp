@@ -1,4 +1,3 @@
-// $Id$
 
 SMTP MODULE for DRUPAL 4.6
 -----
