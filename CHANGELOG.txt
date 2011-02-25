@@ -1,5 +1,4 @@
 <<<<<<< CHANGELOG.txt
-// $Id$
 
 2008-07-17 Jason Flatt drupal@oadaeh.net
   * po: Changed to translations (http://drupal.org/node/262455).
@@ -25,7 +24,6 @@
     Added an administrative option for enabling debugging, per dennys in
     http://drupal.org/node/199843.
 =======
-// $Id$
 
 2009-11-12 Franz G Vanderlinde franz@chuva-inc.com
   * bug report #132903 by johngriffin: definitive integration between Mimemail and SMTP
